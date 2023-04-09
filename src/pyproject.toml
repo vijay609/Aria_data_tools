@@ -1,18 +1,10 @@
-#!/bin/bash
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+[tool.cibuildwheel]
+# build="cp36-*64 cp37-*64 cp38-*64 cp39-*64 cp310-*64 cp311-*64"
+build="cp38-*64"
 
+[tool.cibuildwheel.linux]
+archs = ["x86_64"]
+before-build='''
 # Install system deps
 # Toolchains
 yum install -y cmake git gtest-devel \
@@ -43,3 +35,11 @@ cd /tmp && git clone --recursive https://github.com/boostorg/boost.git -b boost-
     && ./bootstrap.sh \
     && ./b2 --with-system --with-filesystem --with-thread --with-chrono --with-date_time --with-serialization install \
     && rm -rf /tmp/boost;
+'''
+
+skip="*-manylinux_i686 *musllinux*"
+
+[tool.cibuildwheel.macos]
+archs = ["x86_64"]
+before-build="brew install boost cereal cmake fmt glog jpeg-turbo libpng lz4 xxhash zstd"
+environment = {"CMAKE_ARGS"="-DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++"}
