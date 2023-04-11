@@ -23,7 +23,6 @@ namespace py = pybind11;
 using namespace ark::datatools;
 
 PYBIND11_MODULE(projectaria_tools, m) {
-
   py::module dataprovider = m.def_submodule("dataprovider");
   dataprovider::exportPlayers(dataprovider);
   dataprovider::exportDataProvider(dataprovider);
